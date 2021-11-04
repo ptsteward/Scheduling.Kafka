@@ -1,5 +1,5 @@
 # Scheduling.Kafka
-## docker-compuse up -d
+## docker-compose up -d
 ## wait for it
 ## docker logs ksqldb-init
 ## once ksql exits it's ready
