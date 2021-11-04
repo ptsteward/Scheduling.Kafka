@@ -1,19 +1,5 @@
 version: '3.5'
 services:
-  portainer:
-    image: portainer/portainer-ce:latest
-    hostname: portainer
-    container_name: portainer
-    restart: unless-stopped
-    ports:
-      - "9443:9443"
-      - "8000:8000"
-    volumes:
-      - portainer_data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - scheduling-kafka
-
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.1
     hostname: zookeeper
@@ -209,9 +195,6 @@ services:
     entrypoint:
       - bash
       - /data/scripts/ksqldb-init.sh
-
-volumes:
-  portainer_data:
 
 networks:
   scheduling-kafka:
