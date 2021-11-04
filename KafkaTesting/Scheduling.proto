@@ -1,0 +1,39 @@
+/*
+syntax = "proto3";
+option csharp_namespace = "Carvana.Sched.Scheduling.Contracts.Kafka";
+package Carvana.Sched.Scheduling.Contracts.Kafka;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+//Key Facilities.Location
+
+message Resource {
+    Instance Instance = 1;
+    Facilities Facilities = 2;
+}
+
+message Activity {
+    Instance Instance = 1;
+    google.protobuf.Duration Duration = 2;
+    Requirements Requirements = 3;
+}
+
+message ScheduledActivity {
+    Instance Instance = 1;
+    TimeBlock TimeBlock = 2;
+    Requirements Requirements = 3;
+}
+
+message FulfillmentObligation {
+    TimeBlock TimeBlock = 1;
+    map<int32, Position> Translation = 2;
+    repeated ScheduledActivity Activities = 3;
+}
+
+//Key Intention.IdentityKind
+message CustomerDesire {
+    Identity Intention = 1;
+    Instance Subject = 2;
+    Instance Object = 3;
+    repeated Instance Qualifications = 4;
+}*/
