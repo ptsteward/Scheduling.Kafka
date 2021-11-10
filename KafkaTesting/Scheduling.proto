@@ -1,4 +1,4 @@
-/*
+
 syntax = "proto3";
 option csharp_namespace = "Carvana.Sched.Scheduling.Contracts.Kafka";
 package Carvana.Sched.Scheduling.Contracts.Kafka;
@@ -36,4 +36,4 @@ message CustomerDesire {
     Instance Subject = 2;
     Instance Object = 3;
     repeated Instance Qualifications = 4;
-}*/
+}

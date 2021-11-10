@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="protos\scheduling\requirement.proto" />
+    <None Remove="protos\scheduling\resource.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="1.8.2" />
     <PackageReference Include="Confluent.SchemaRegistry.Serdes.Protobuf" Version="1.8.2" />
     <PackageReference Include="Google.Protobuf" Version="3.19.1" />
@@ -16,14 +21,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="ksqlDb.RestApi.Client" Version="1.2.0" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="protos\scheduling\core.proto" />
-    <Protobuf Include="protos\scheduling\facilities.proto" />
-    <Protobuf Include="protos\scheduling\fundamental_units.proto" />
-    <Protobuf Include="protos\scheduling\requirements.proto" />
+    <Protobuf Include="protos\scheduling\capability.proto" />
+    <Protobuf Include="protos\scheduling\requirement.proto" />
+    <Protobuf Include="protos\scheduling\resource.proto" />
   </ItemGroup>
 
 </Project>
