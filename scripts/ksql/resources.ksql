@@ -1,6 +1,34 @@
+DROP STREAM IF EXISTS resource_stream;
+DROP STREAM IF EXISTS resource_stream_by_location;
+DROP TABLE IF EXISTS resource_table_by_location;
+DROP TABLE IF EXISTS resource_table;
+
 CREATE OR REPLACE STREAM resource_stream
-WITH (VALUE_FORMAT='PROTOBUF', KAFKA_TOPIC='resources');
+(MessageKey VARCHAR KEY)
+WITH (VALUE_FORMAT='PROTOBUF', KAFKA_TOPIC='resource_topic');
+
+CREATE OR REPLACE STREAM resource_stream_by_location
+WITH (KEY_FORMAT='DELIMITED')
+AS SELECT
+*
+FROM resource_stream
+PARTITION BY Location, Instance->InstanceGuid
+EMIT CHANGES;
+
+CREATE OR REPLACE TABLE resource_table_by_location
+WITH (KEY_FORMAT='DELIMITED')
+AS SELECT
+    Location,
+    Instance->InstanceGuid,
+    Instance,
+    Capabilities,
+    COUNT(*)
+FROM resource_stream
+GROUP BY Location, Instance->InstanceGuid, Instance, Capabilities
+EMIT CHANGES;
 
 LIST TOPICS;
 
 LIST STREAMS;
+
+LIST TABLES;

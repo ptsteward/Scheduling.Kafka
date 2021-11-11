@@ -9,5 +9,6 @@ option csharp_namespace = "Carvana.Sched.Scheduling.Contracts.Kafka";
 
 message Resource {
     Instance Instance = 1;
-    repeated Capability Capabilities = 2;
+    string Location = 2;
+    repeated Capability Capabilities = 3;
 }

@@ -1,0 +1,58 @@
+DROP TABLE IF EXISTS test_tables3;
+DROP TABLE IF EXISTS test_tables2;
+DROP TABLE IF EXISTS test_tables;
+DROP STREAM IF EXISTS flatten_stream;
+DROP STREAM IF EXISTS rebuilt_stream;
+DROP STREAM IF EXISTS test_stream;
+
+CREATE OR REPLACE STREAM test_stream
+(MessageKey VARCHAR KEY)
+WITH (KEY_FORMAT='KAFKA', VALUE_FORMAT='PROTOBUF', KAFKA_TOPIC='test_topic');
+
+CREATE OR REPLACE STREAM rebuilt_stream
+AS SELECT
+    MessageKey,
+    STRUCT(IdentityGuid := Identity->IdentityGuid, IdentityKind := Identity->IdentityKind) AS Identity,
+    Capabilities
+FROM test_stream
+EMIT CHANGES;
+
+CREATE OR REPLACE STREAM flatten_stream
+AS SELECT
+    MessageKey,
+    Identity,
+    EXPLODE(Capabilities) AS Capability
+FROM test_stream
+EMIT CHANGES;
+
+CREATE OR REPLACE TABLE test_tables
+AS SELECT
+    Identity->IdentityKind,
+    STRUCT(IdentityGuid := LATEST_BY_OFFSET(Identity->IdentityGuid), IdentityKind := LATEST_BY_OFFSET(Identity->IdentityKind)) AS Identity
+FROM flatten_stream
+GROUP BY Identity->IdentityKind
+EMIT CHANGES;
+
+CREATE OR REPLACE TABLE test_tables2
+AS SELECT
+    Identity->IdentityKind,
+    STRUCT(IdentityGuid := LATEST_BY_OFFSET(Identity->IdentityGuid), IdentityKind := LATEST_BY_OFFSET(Identity->IdentityKind)) AS Identity,
+    LATEST_BY_OFFSET(CAST(Capabilities AS VARCHAR)) AS Capabilities
+FROM test_stream
+GROUP BY Identity->IdentityKind
+EMIT CHANGES;
+
+CREATE OR REPLACE TABLE test_tables3
+AS SELECT
+    Identity->IdentityKind,
+    STRUCT(IdentityGuid := LATEST_BY_OFFSET(Identity->IdentityGuid), IdentityKind := LATEST_BY_OFFSET(Identity->IdentityKind)) AS Identity,
+    LATEST_BY_OFFSET(Capability) AS Capabilities
+FROM flatten_stream
+GROUP BY Identity->IdentityKind
+EMIT CHANGES;
+
+LIST TOPICS;
+
+LIST STREAMS;
+
+LIST TABLES;

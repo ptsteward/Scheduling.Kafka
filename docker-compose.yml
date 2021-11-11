@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.1
+    image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
     container_name: zookeeper
     restart: unless-stopped
@@ -15,7 +15,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker1:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:latest
     hostname: broker1
     container_name: broker1
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
 
   broker2:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:latest
     hostname: broker2
     container_name: broker2
     restart: unless-stopped
@@ -65,7 +65,7 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
 
   broker3:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:latest
     hostname: broker3
     container_name: broker3
     restart: unless-stopped
@@ -90,7 +90,7 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:6.2.1
+    image: confluentinc/cp-schema-registry:latest
     hostname: schema-registry
     container_name: schema-registry
     restart: unless-stopped
@@ -108,7 +108,8 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:6.2.1
+    #image: confluentinc/cp-ksqldb-server:6.2.1
+    image: confluentinc/cp-ksqldb-server:latest
     hostname: ksqldb-server
     container_name: ksqldb-server
     restart: unless-stopped
@@ -134,7 +135,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:6.2.1
+    image: confluentinc/cp-kafka-rest:latest
     hostname: rest-proxy
     container_name: rest-proxy
     restart: unless-stopped
@@ -154,7 +155,7 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   topic-init:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:latest
     container_name: topic-init
     depends_on:
       - broker1
@@ -162,7 +163,7 @@ services:
       - broker3
       - rest-proxy
     volumes:
-      - .\scripts\topics\:/data/scripts/      
+      - .\scripts\topics\:/data/scripts/
     networks:
       - scheduling-kafka
     entrypoint:
@@ -184,7 +185,7 @@ services:
       - /data/scripts/schema-init.sh
 
   ksqldb-init:
-    image: confluentinc/cp-ksqldb-cli:6.2.1
+    image: confluentinc/cp-ksqldb-cli:latest
     container_name: ksqldb-init
     depends_on:
       - schema-registry
