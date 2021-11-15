@@ -50,17 +50,11 @@ namespace KafkaTesting.ksqlDB
                 builder.AppendLine($"{arrayResult.json}");
                 return (input.Remove(0, arrayResult.removed), arrayResult.removed);
             }
-            else if (input.StartsWith("Struct"))
+            else if (input.StartsWith("Struct") || input.StartsWith("{"))
             {
-                var structResult = Parse_Object(input);
-                builder.Append($"{structResult.json}");
-                return (input.Remove(0, structResult.removed), structResult.removed);
-            }
-            else if (input.StartsWith("{"))
-            {
-                var mapResult = Parse_Object(input);
-                builder.Append($"{mapResult.json}");
-                return (input.Remove(0, mapResult.removed), mapResult.removed);
+                var objectResult = Parse_Object(input);
+                builder.Append($"{objectResult.json}");
+                return (input.Remove(0, objectResult.removed), objectResult.removed);
             }
             else
             {
@@ -108,7 +102,6 @@ namespace KafkaTesting.ksqlDB
 
         private (string json, int removed) Parse_BareValue(string input)
         {
-            Console.WriteLine($"BareValue:{input}");
             var valueLength = new[] { input.IndexOf(","), input.IndexOf(@""""), input.IndexOf("}"), input.Length }.Where(idx => idx > 0).Min();
             var value = input.Substring(0, valueLength);            
             return (value, value.Length);
