@@ -14,40 +14,7 @@ namespace KafkaTesting
 {
     public class ProgramKsql
     {
-        public class Resource2
-        {
-            public int Count { get; set; }
-            public string Key1 { get; set; }
-            public Instance2 Instance { get; set; }
-        }
-
-        public class Instance2
-        {
-            public Identity2 Identity { get; set; }
-        }
-
-        public class Identity2
-        {
-            public string IdentityGuid { get; set; }
-            public string IdentityKind { get; set; }
-        }
-
-        public class ResourceTable
-        {
-            public string Location { get; set; }
-            public IEnumerable<Resource> Resources { get; set; }
-        }
-
-        //public partial class Test
-        //{
-        //    public Test(Identity identity, RepeatedField<string> capabilities)
-        //    {
-        //        Identity = identity;
-        //        Capabilities = capabilities;
-        //    }
-        //}
-
-        public static async Task Main(string[] args)
+        public static async Task _Main(string[] args)
         {
             var producer = new TopicProducer();
             var context = new KSqlDBContext(@"http://localhost:8088");
@@ -87,9 +54,10 @@ namespace KafkaTesting
                 Console.WriteLine("Waiting 5s");
                 await Task.Delay(5000);
                 //var table = context.CreatePullQuery<Test>("test_table").Where(t => t.Identity.IdentityKind == "MSP").GetManyAsync();
-                var table = context.CreateQueryStream<Test>(tableParam);
-                await foreach (var test in table)
+                var table = context.CreateQueryStream<KsqlPayload>(tableParam);
+                await foreach (var payload in table)
                 {
+                    var test = JsonConvert.DeserializeObject<Test>(payload.Payload);
                     Console.WriteLine($"TABLE: {JsonConvert.SerializeObject(test)}");
                     Console.WriteLine($"TABLE: IdentityGuid:{test?.Identity?.IdentityGuid} IdentityKind:{test?.Identity?.IdentityKind} Capabilities:{test?.Capabilities}");
                 }
@@ -99,5 +67,16 @@ namespace KafkaTesting
                 Console.WriteLine($"ProduceException: {ex}");
             }
         }
+    }
+
+    public class KsqlPayload
+    {
+        public string Payload { get; set; }
+    }
+
+    public class PayloadDeserializer
+    {
+        public T Deserialize<T>(KsqlPayload payload)
+            => JsonConvert.DeserializeObject<T>(payload.Payload);
     }
 }

@@ -36,11 +36,20 @@ namespace KafkaTesting
                     Identity = new Identity()
                     {
                         IdentityGuid = key,
-                        IdentityKind = locations[which]
-                    },
+                        IdentityKind = locations[which],
+                        IdentityType = 1
+                    },                    
                 }
             };
+            
             msg.Value.Capabilities.AddRange(which == 0 && rand.Next(0, 2) == 0 ? instances1 : instances2);
+            var testX = new TestX()
+            {
+                Identity = msg.Value.Identity
+            };
+            testX.Capabilities.Add(msg.Value.Capabilities);
+            msg.Value.Amap.Add(1, testX);
+            msg.Value.Amap.Add(2, testX);
             return msg;
         }
     }

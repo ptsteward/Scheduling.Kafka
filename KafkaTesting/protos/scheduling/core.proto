@@ -10,6 +10,7 @@ option csharp_namespace = "Carvana.Sched.Scheduling.Contracts.Kafka";
 message Identity {
     string IdentityGuid = 1;
     string IdentityKind = 2;
+    int32 IdentityType = 3;
 }
 
 message Instance {

@@ -11,6 +11,7 @@
     <None Remove="protos\scheduling\requirement.proto" />
     <None Remove="protos\scheduling\resource.proto" />
     <None Remove="protos\scheduling\test.proto" />
+    <None Remove="protos\scheduling\test2.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
   <ItemGroup>
     <Protobuf Include="protos\scheduling\core.proto" />
     <Protobuf Include="protos\scheduling\capability.proto" />
+    <Protobuf Include="protos\scheduling\test2.proto" />
     <Protobuf Include="protos\scheduling\test.proto" />
     <Protobuf Include="protos\scheduling\requirement.proto" />
     <Protobuf Include="protos\scheduling\resource.proto" />
