@@ -1,7 +1,11 @@
 ﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
 using KafkaTesting.ksqlDB;
+using KafkaTesting.ksqlDB.Abstractions;
+using KafkaTesting.ksqlDB.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Net;
+using System.Reflection;
 
 namespace KafkaTesting
 {
@@ -11,21 +15,14 @@ namespace KafkaTesting
         {
             try
             {
-                var handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                var x = new KsqlQueryExecutor(new KsqlClient(new HttpClient()
-                {
-                    BaseAddress = new Uri("http://localhost:8088"),
-                    DefaultRequestVersion = HttpVersion.Version20,
-                    DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
-                }), new KsqlStreamParser(new KsqlRowParser()));
-                var en = x.ExecuteQuery<Test2>(new KsqlQuery()
-                {
-                    Ksql = "SELECT * FROM test_tables5 EMIT CHANGES;"
-                });
+                var services = new ServiceCollection()
+                    .AddKsqlStreamProvider(new Uri("http://localhost:8088"), Assembly.GetExecutingAssembly(), "KsqlQueries");
+                var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamProvider>();
+
+                var stream = provider.ExecuteQueryAsync<Test2>("testing");
                 var producer = new TopicProducer();
                 var produceTask = producer.ProduceAsync();
-                await foreach (var test in en)
+                await foreach (var test in stream)
                 {
                     Console.WriteLine($@"
                     STREAM:
@@ -37,7 +34,7 @@ namespace KafkaTesting
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception:{ex}");
+                Console.WriteLine($"ExceptionFromRoot:{ex}");
             }
         }
     }

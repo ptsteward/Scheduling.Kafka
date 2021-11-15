@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using KafkaTesting.ksqlDB.Abstractions;
+using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace KafkaTesting.ksqlDB
 {
-    public class KsqlRowParser
+    public class KsqlRowParser : IKsqlRowParser
     {
         public string ParseStreamRowToJson(string input, string[] headers)
         {
@@ -103,9 +104,9 @@ namespace KafkaTesting.ksqlDB
         private (string json, int removed) Parse_BareValue(string input)
         {
             var valueLength = new[] { input.IndexOf(","), input.IndexOf(@""""), input.IndexOf("}"), input.Length }.Where(idx => idx > 0).Min();
-            var value = input.Substring(0, valueLength);            
+            var value = input.Substring(0, valueLength);
             return (value, value.Length);
-        }        
+        }
 
         private (string leftOver, int removed) Parse_Header(string input, int start, StringBuilder builder)
         {

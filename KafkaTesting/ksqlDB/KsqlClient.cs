@@ -1,3 +1,5 @@
+using KafkaTesting.ksqlDB.Abstractions;
+using KafkaTesting.ksqlDB.Objects;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
@@ -6,46 +8,37 @@ using System.Text;
 
 namespace KafkaTesting.ksqlDB
 {
-    public class KsqlClient
+    public class KsqlClient : IKsqlClient
     {
         private const string KsqlMediaType = "application/vnd.ksqlapi.delimited.v1";
 
-        private readonly HttpClient _client;
+        private readonly HttpClient client;
 
-        public KsqlClient(HttpClient client) => _client = client;
+        public KsqlClient(HttpClient client) => this.client = client;
 
         public async Task<Stream> ExecuteQueryAsync(KsqlQuery query, CancellationToken token = default)
         {
-            var request = JsonConvert.SerializeObject(query);
-            var msg = new HttpRequestMessage(HttpMethod.Post, "/query-stream")
-            {
-                Content = new StringContent(request, Encoding.UTF8, KsqlMediaType),
-                Headers = { { "accept", MediaTypeWithQualityHeaderValue.Parse(KsqlMediaType).ToString() } },
-                Version = HttpVersion.Version20,
-                VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
-            };
-
-            var response = await _client.SendAsync(msg,
-                HttpCompletionOption.ResponseHeadersRead,
-                token);
-
-            Console.WriteLine($"{response.StatusCode} {response.ReasonPhrase}");
+            var body = JsonConvert.SerializeObject(query);
+            var message = BuildRequestMessage("/query-stream", body);
+            var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token);
             return await response.Content.ReadAsStreamAsync();
         }
 
         public async Task<HttpStatusCode> CloseStreamAsync(string queryId, CancellationToken token = default)
         {
-            var request = JsonConvert.SerializeObject(new { queryId });
-            var msg = new HttpRequestMessage(HttpMethod.Post, "/close-query")
+            var body = JsonConvert.SerializeObject(new { queryId });
+            var message = BuildRequestMessage("/close-query", body);
+            using var response = await client.SendAsync(message, token);
+            return response.StatusCode;
+        }
+
+        private HttpRequestMessage BuildRequestMessage(string requestUri, string body)
+            => new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                Content = new StringContent(request, Encoding.UTF8, MediaTypeNames.Application.Json),
+                Content = new StringContent(body, Encoding.UTF8, MediaTypeNames.Application.Json),
+                Headers = { { "accept", MediaTypeWithQualityHeaderValue.Parse(KsqlMediaType).ToString() } },
                 Version = HttpVersion.Version20,
                 VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
             };
-
-            using var response = await _client.SendAsync(msg, token);
-
-            return response.StatusCode;
-        }
     }
 }

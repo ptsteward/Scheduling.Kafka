@@ -1,10 +1,9 @@
-﻿using System;
-using Carvana.Sched.Scheduling.Contracts.Kafka;
+﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using Google.Protobuf.WellKnownTypes;
+using System;
 
 namespace KafkaTesting
 {
