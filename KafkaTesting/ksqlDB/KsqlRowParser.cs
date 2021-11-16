@@ -67,8 +67,31 @@ namespace KafkaTesting.ksqlDB
 
         private (string json, int removed) Parse_Array(string input)
         {
-            var array = input.Substring(0, input.IndexOf("]") + 1);
-            return (array, array.Length);
+            var builder = new StringBuilder();
+            var arrayRaw = input.Substring(0, input.LastIndexOf("]") + 1);
+            var removed = 1;
+            var leftOver = arrayRaw.TrimStart('[');
+            builder.AppendLine("[");
+
+            while (leftOver.Length > 1 && !leftOver.StartsWith("]"))
+            {
+                (leftOver, int remove) = Parse_RawStringValue(leftOver, builder);
+                removed += remove;                
+                
+                if (leftOver.StartsWith(", "))
+                {
+                    builder.Append(",");
+                    leftOver = leftOver.Remove(0, 2);
+                    removed += 2;
+                }
+            }
+
+            builder.Append($"{Environment.NewLine}]");
+
+            if (leftOver.StartsWith("]"))
+                removed++;
+
+            return (builder.ToString(), removed);
         }
 
         private (string json, int removed) Parse_Object(string input)

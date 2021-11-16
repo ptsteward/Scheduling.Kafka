@@ -1,13 +1,13 @@
 ﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
 using Confluent.Kafka;
 
-namespace KafkaTesting
+namespace KafkaTesting.MessageProducers.Messages
 {
-    public static class TestMessageProducer
+    public class TestMessageProducer : IMessageProducer<Test>
     {
         private static Random rand = new Random();
 
-        public static Message<string, Test> ProduceMessage()
+        public Message<string, Test> ProduceMessage()
         {
             var which = rand.Next(0, 2);
             var key = which == 0 ? "xyz" : "abc";
@@ -37,7 +37,6 @@ namespace KafkaTesting
                     {
                         IdentityGuid = key,
                         IdentityKind = locations[which],
-                        IdentityType = 1
                     },                    
                 }
             };

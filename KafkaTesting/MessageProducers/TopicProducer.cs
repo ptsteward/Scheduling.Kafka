@@ -1,12 +1,22 @@
-﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using Google.Protobuf;
+using KafkaTesting.MessageProducers.Messages;
 
-namespace KafkaTesting
+namespace KafkaTesting.MessageProducers
 {
-    public class TopicProducer
+    public class TopicProducer<T> where T : class, IMessage<T>, new()
     {
+        private readonly IMessageProducer<T> messageProducer;
+        private readonly string topic = string.Empty;
+
+        public TopicProducer(IMessageProducer<T> messageProducer, string topic)
+        {
+            this.messageProducer = messageProducer;
+            this.topic = topic;
+        }
+
         public async Task ProduceAsync()
         {
             var producerConfig = new ProducerConfig()
@@ -18,25 +28,24 @@ namespace KafkaTesting
             {
                 Url = "localhost:8081",
             };
-            var producerTopic = "test_topic";
 
             using var schemaClient = new CachedSchemaRegistryClient(schemaConfig);
             var produceTask = Task.Run(async () =>
             {
-                var builder = new ProducerBuilder<string, Test>(producerConfig)
-                .SetValueSerializer(new ProtobufSerializer<Test>(schemaClient))
+                var builder = new ProducerBuilder<string, T>(producerConfig)
+                .SetValueSerializer(new ProtobufSerializer<T>(schemaClient))
                 .SetErrorHandler((p, e) => Console.WriteLine(e));
 
                 using var producer = builder.Build();
-                Console.WriteLine($"Producing messages to Topic:{producerTopic}");
+                Console.WriteLine($"Producing messages to Topic:{topic}");
                 while (true)
                 {
                     await Task.Delay(500);
                     Console.WriteLine($"Producing new message");
 
-                    var msg = TestMessageProducer.ProduceMessage();
+                    var msg = messageProducer.ProduceMessage();
 
-                    await producer.ProduceAsync(producerTopic, msg);
+                    await producer.ProduceAsync(topic, msg);
                     Console.WriteLine("Produced new message");
                 }
             });

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="KsqlQueries\resources.ksql" />
     <None Remove="KsqlQueries\testing.ksql" />
     <None Remove="protos\scheduling\requirement.proto" />
     <None Remove="protos\scheduling\resource.proto" />
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="KsqlQueries\resources.ksql" />
     <EmbeddedResource Include="KsqlQueries\testing.ksql" />
   </ItemGroup>
 

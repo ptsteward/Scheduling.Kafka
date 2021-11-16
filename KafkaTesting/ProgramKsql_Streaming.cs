@@ -1,7 +1,8 @@
 ﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
-using KafkaTesting.ksqlDB;
 using KafkaTesting.ksqlDB.Abstractions;
 using KafkaTesting.ksqlDB.Extensions;
+using KafkaTesting.MessageProducers;
+using KafkaTesting.MessageProducers.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Net;
@@ -9,8 +10,10 @@ using System.Reflection;
 
 namespace KafkaTesting
 {
-    public class ProgramKsql2
+    public class ProgramKsql_Streaming
     {
+        private const string ksqlQueryName = "resources";
+
         public static async Task Main(string[] args)
         {
             try
@@ -19,23 +22,27 @@ namespace KafkaTesting
                     .AddKsqlStreamProvider(new Uri("http://localhost:8088"), Assembly.GetExecutingAssembly(), "KsqlQueries");
                 var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamProvider>();
 
-                var stream = provider.ExecuteQueryAsync<Test2>("testing");
-                var producer = new TopicProducer();
+                var stream = provider.ExecuteQueryAsync<Resource>(ksqlQueryName);
+                var producer = new TopicProducer<Resource>(new ResourceMessageProducer(), "resource_topic");
                 var produceTask = producer.ProduceAsync();
-                await foreach (var test in stream)
+                await foreach (var resource in stream)
                 {
-                    Console.WriteLine($@"
-                    STREAM:
-                    Complex: {JsonConvert.SerializeObject(test?.Complex)}
-                    Identity:{JsonConvert.SerializeObject(test?.Identity)}
-                    Capabilities: {test?.Capabilities}
-                    Amap: {JsonConvert.SerializeObject(test?.Amap)}");
+                    PrintItem(resource);
                 }            
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"ExceptionFromRoot:{ex}");
             }
+        }
+
+        private static void PrintItem(Resource item)
+        {
+            Console.WriteLine($@"
+STREAM:
+Instance: {JsonConvert.SerializeObject(item?.Instance)}
+Location:{item?.Location}
+Capabilities: {JsonConvert.SerializeObject(item?.Capabilities)}");
         }
     }
 }

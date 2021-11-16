@@ -26,7 +26,6 @@ echo -e "\nScheduling"
 echo -e "\nTopic Schemas"
 /data/scripts/post-schema.sh -p "/data/protos/scheduling/resource.proto" -s "resource_topic-value" -r "/data/scripts/json/resource-refs.json"
 /data/scripts/post-schema.sh -p "/data/protos/scheduling/test.proto" -s "test_topic-value" -r "/data/scripts/json/test-refs.json"
-#/data/scripts/post-schema.sh -p "/data/protos/scheduling/test.proto" -s "FLATTEN_STREAM-value" -r "/data/scripts/json/test-refs.json"
 
 echo -e "\nAll Subjects"
 curl -silent -X GET "http://schema-registry:8081/subjects"
