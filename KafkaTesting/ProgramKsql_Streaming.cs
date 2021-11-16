@@ -26,7 +26,7 @@ namespace KafkaTesting
                 var producer = new TopicProducer<Resource>(new ResourceMessageProducer(), "resource_topic");
                 var _ = producer.ProduceAsync(cts.Token);
 
-                Console.WriteLine("Produce Done, Requesting State");
+                //Console.WriteLine("Produce Done, Requesting State");
 
                 var stream = provider.ExecuteQueryAsync<Resource>(ksqlQueryName);
                 await foreach (var resource in stream)
