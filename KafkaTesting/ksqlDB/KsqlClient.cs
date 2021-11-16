@@ -19,7 +19,7 @@ namespace KafkaTesting.ksqlDB
         public async Task<Stream> ExecuteQueryAsync(KsqlQuery query, CancellationToken token = default)
         {
             var body = JsonConvert.SerializeObject(query);
-            var message = BuildRequestMessage("/query-stream", body);
+            var message = BuildOpenRequestMessage("/query-stream", body);
             var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token);
             return await response.Content.ReadAsStreamAsync();
         }
@@ -27,16 +27,24 @@ namespace KafkaTesting.ksqlDB
         public async Task<HttpStatusCode> CloseStreamAsync(string queryId, CancellationToken token = default)
         {
             var body = JsonConvert.SerializeObject(new { queryId });
-            var message = BuildRequestMessage("/close-query", body);
+            var message = BuildCloseRequestMessage("/close-query", body);
             using var response = await client.SendAsync(message, token);
             return response.StatusCode;
         }
 
-        private HttpRequestMessage BuildRequestMessage(string requestUri, string body)
+        private HttpRequestMessage BuildOpenRequestMessage(string requestUri, string body)
+            => new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = new StringContent(body, Encoding.UTF8, KsqlMediaType),
+                Headers = { { "accept", MediaTypeWithQualityHeaderValue.Parse(KsqlMediaType).ToString() } },
+                Version = HttpVersion.Version20,
+                VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
+            };
+
+        private HttpRequestMessage BuildCloseRequestMessage(string requestUri, string body)
             => new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
                 Content = new StringContent(body, Encoding.UTF8, MediaTypeNames.Application.Json),
-                Headers = { { "accept", MediaTypeWithQualityHeaderValue.Parse(KsqlMediaType).ToString() } },
                 Version = HttpVersion.Version20,
                 VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
             };

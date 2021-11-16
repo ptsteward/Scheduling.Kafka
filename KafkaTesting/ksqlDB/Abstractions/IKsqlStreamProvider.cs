@@ -4,6 +4,6 @@ namespace KafkaTesting.ksqlDB.Abstractions
 {
     public interface IKsqlStreamProvider
     {
-        IAsyncEnumerable<T> ExecuteQueryAsync<T>(string queryName, [EnumeratorCancellation] CancellationToken token = default);
+        IAsyncEnumerable<T> ExecuteQueryAsync<T>(string queryName, CancellationToken token = default);
     }
 }

@@ -46,7 +46,7 @@ namespace KafkaTesting.ksqlDB
 
         private (string query, Dictionary<string, string> options) ParseQuery(string input)
         {
-            var query = input.Substring(0, input.LastIndexOf(";"));
+            var query = input.Substring(0, input.LastIndexOf(";") + 1);
             var optionsRaw = input.Substring(input.LastIndexOf(";") + 1).Trim();
             var optionsMaybe = JsonConvert.DeserializeObject<Dictionary<string, string>>(optionsRaw);
             var options = optionsMaybe.DefaultOptionsIfEmpty();

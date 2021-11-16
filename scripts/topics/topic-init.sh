@@ -5,8 +5,6 @@ echo -e "\nStarting Topic Init... Waiting for Rest Proxy"
 while [ "`curl -s http://rest-proxy:8082/brokers`" != "{\"brokers\":[1,2,3]}" ]
 do 
     echo -e $(date) "Waiting for all three Brokers"
-    echo $(curl -s http://rest-proxy:8082/brokers)
-    echo dump | nc zookeeper 2181 | grep brokers
     sleep 5
 done  
 
