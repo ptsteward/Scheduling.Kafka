@@ -15,5 +15,5 @@ do
 done
 
 echo -e "\nRunning KSQL"
-cat /data/scripts/types.ksql /data/scripts/resources.ksql /data/scripts/test.ksql \
+cat /data/scripts/types.ksql /data/scripts/resources.ksql /data/scripts/test.ksql /data/scripts/list_things.ksql \
 | ksql http://ksqldb-server:8088

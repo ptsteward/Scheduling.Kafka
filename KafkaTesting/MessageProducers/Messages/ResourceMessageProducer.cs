@@ -40,9 +40,9 @@ namespace KafkaTesting.MessageProducers.Messages
                             IdentityGuid = key,
                             IdentityKind = locations[which]
                         },
-                        InstanceGuid = which == 0 ? instances1[rand.Next(0, instances1.Length)] : instances2[rand.Next(0, instances2.Length)]
+                        InstanceGuid = "1"//which == 0 ? instances1[rand.Next(0, instances1.Length)] : instances2[rand.Next(0, instances2.Length)]
                     },
-                    Location = locations[which]
+                    Location = "PHX"//locations[which]
                 }
             };
             msg.Value.Capabilities.AddRange(new[]

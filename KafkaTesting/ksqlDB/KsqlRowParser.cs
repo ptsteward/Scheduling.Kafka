@@ -1,4 +1,5 @@
 ﻿using KafkaTesting.ksqlDB.Abstractions;
+using KafkaTesting.ksqlDB.Extensions;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
@@ -15,7 +16,12 @@ namespace KafkaTesting.ksqlDB
         private string BuildJson(string input, string[] headers)
         {
             var builder = new StringBuilder();
-            var values = JArray.Parse(input);
+
+            var success = input.TryParse(out var values);
+
+            if (!success) return string.Empty;
+            if (values.Count != headers.Length) return string.Empty;
+
             builder.AppendLine("{");
 
             for (int k = 0; k < values.Count; k++)

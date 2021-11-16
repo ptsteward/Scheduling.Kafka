@@ -16,9 +16,3 @@ AS SELECT
 FROM resource_stream
 GROUP BY Location, Instance->InstanceGuid
 EMIT CHANGES;
-
-LIST TOPICS;
-
-LIST STREAMS;
-
-LIST TABLES;

@@ -21,6 +21,8 @@ namespace KafkaTesting.ksqlDB
             var body = JsonConvert.SerializeObject(query);
             var message = BuildOpenRequestMessage("/query-stream", body);
             var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token);
+            Console.WriteLine($"KsqlClient: {response.StatusCode}");
+            //Console.WriteLine($"KsqlClient: {await response.Content.ReadAsStringAsync()}");
             return await response.Content.ReadAsStreamAsync();
         }
 

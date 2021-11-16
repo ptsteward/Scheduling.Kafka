@@ -93,9 +93,3 @@ AS SELECT
 FROM complex_stream2
 GROUP BY Identity->IdentityKind
 EMIT CHANGES;
-
-LIST TOPICS;
-
-LIST STREAMS;
-
-LIST TABLES;

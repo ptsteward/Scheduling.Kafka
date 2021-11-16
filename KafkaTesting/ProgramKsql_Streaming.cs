@@ -5,14 +5,13 @@ using KafkaTesting.MessageProducers;
 using KafkaTesting.MessageProducers.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System.Net;
 using System.Reflection;
 
 namespace KafkaTesting
 {
     public class ProgramKsql_Streaming
     {
-        private const string ksqlQueryName = "resources";
+        private const string ksqlQueryName = "resources_push";
 
         public static async Task Main(string[] args)
         {
@@ -22,9 +21,14 @@ namespace KafkaTesting
                     .AddKsqlStreamProvider(new Uri("http://localhost:8088"), Assembly.GetExecutingAssembly(), "KsqlQueries");
                 var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamProvider>();
 
-                var stream = provider.ExecuteQueryAsync<Resource>(ksqlQueryName);
+                var cts = new CancellationTokenSource();
+                //cts.CancelAfter(TimeSpan.FromSeconds(10));
                 var producer = new TopicProducer<Resource>(new ResourceMessageProducer(), "resource_topic");
-                var produceTask = producer.ProduceAsync();
+                var _ = producer.ProduceAsync(cts.Token);
+
+                Console.WriteLine("Produce Done, Requesting State");
+
+                var stream = provider.ExecuteQueryAsync<Resource>(ksqlQueryName);
                 await foreach (var resource in stream)
                 {
                     PrintItem(resource);

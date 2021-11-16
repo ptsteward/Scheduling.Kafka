@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KafkaTesting.ksqlDB.Extensions
 {
@@ -16,5 +13,20 @@ namespace KafkaTesting.ksqlDB.Extensions
             {
                 ["ksql.streams.auto.offset.reset"] = "earliest"
             };
+
+        public static bool TryParse(this string input, out JArray array)
+        {
+            try
+            {
+                var output = JArray.Parse(input);
+                array = output;
+                return true;
+            }
+            catch (JsonReaderException)
+            {
+                array = new JArray();
+                return false;
+            }
+        }
     }
 }

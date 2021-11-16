@@ -17,7 +17,7 @@ namespace KafkaTesting.MessageProducers
             this.topic = topic;
         }
 
-        public async Task ProduceAsync()
+        public async Task ProduceAsync(CancellationToken token = default)
         {
             var producerConfig = new ProducerConfig()
             {
@@ -38,7 +38,7 @@ namespace KafkaTesting.MessageProducers
 
                 using var producer = builder.Build();
                 Console.WriteLine($"Producing messages to Topic:{topic}");
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(500);
                     Console.WriteLine($"Producing new message");
