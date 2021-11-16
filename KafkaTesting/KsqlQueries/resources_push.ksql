@@ -1,5 +1,1 @@
 ﻿SELECT * FROM resources_by_location EMIT CHANGES;
-
-{
-	"ksql.streams.auto.offset.reset":"earliest"
-}

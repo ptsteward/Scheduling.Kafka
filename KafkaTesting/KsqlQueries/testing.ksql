@@ -1,5 +1,1 @@
 ﻿SELECT * FROM test_tables5 EMIT CHANGES;
-
-{
-	"ksql.streams.auto.offset.reset":"earliest"
-}

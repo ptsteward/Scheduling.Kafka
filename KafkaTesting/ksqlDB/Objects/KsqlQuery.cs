@@ -8,6 +8,6 @@ namespace KafkaTesting.ksqlDB.Objects
         public string Ksql { get; init; } = string.Empty;
 
         [JsonProperty("streamsProperties")]
-        public Dictionary<string, string> StreamProperties { get; init; } = new Dictionary<string, string>();
+        public IReadOnlyDictionary<string, string> StreamProperties { get; init; } = new Dictionary<string, string>();
     }
 }

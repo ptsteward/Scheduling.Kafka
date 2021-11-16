@@ -12,7 +12,7 @@ namespace KafkaTesting.ksqlDB.Extensions
             services.AddSingleton<IKsqlQueryReader, KsqlQueryReader>(_ => new KsqlQueryReader(ksqlQueryAssembly, ksqlNamespace))
                 .AddSingleton<IKsqlStreamParser, KsqlStreamParser>()
                 .AddSingleton<IKsqlRowParser, KsqlRowParser>()
-                .AddSingleton<IKsqlStreamProvider, KsqlStreamProvider>();
+                .AddSingleton<IKsqlStreamContext, KsqlStreamContext>();
             services.AddHttpClient<IKsqlClient, KsqlClient>(client =>
             {
                 client.BaseAddress = ksqldbServer;

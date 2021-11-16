@@ -5,15 +5,6 @@ namespace KafkaTesting.ksqlDB.Extensions
 {
     internal static class KsqlExtensions
     {
-        public static Dictionary<string, string> DefaultOptionsIfEmpty(this Dictionary<string, string> options)
-            => (options is not null && options.Any()) ?
-            options
-            :
-            new Dictionary<string, string>()
-            {
-                ["ksql.streams.auto.offset.reset"] = "earliest"
-            };
-
         public static bool TryParse(this string input, out JArray array)
         {
             try

@@ -18,9 +18,13 @@ namespace KafkaTesting
             {
                 var services = new ServiceCollection()
                     .AddKsqlStreamProvider(new Uri("http://localhost:8088"), Assembly.GetExecutingAssembly(), "KsqlQueries");
-                var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamProvider>();
+                var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamContext>();
 
-                var stream = provider.ExecuteQueryAsync<Test2>("testing");
+                var options = new Dictionary<string, string>()
+                {
+                    ["ksql.streams.auto.offset.reset"] = "earliest"
+                };
+                var stream = provider.ExecuteQueryAsync<Test2>("testing", options);
                 var producer = new TopicProducer<Test>(new TestMessageProducer(), "test_topic");
                 var produceTask = producer.ProduceAsync();
                 await foreach (var test in stream)

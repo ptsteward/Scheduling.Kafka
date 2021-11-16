@@ -4,22 +4,22 @@ using System.Runtime.CompilerServices;
 
 namespace KafkaTesting.ksqlDB
 {
-    public class KsqlStreamProvider : IKsqlStreamProvider
+    public class KsqlStreamContext : IKsqlStreamContext
     {
         private readonly IKsqlQueryReader queryReader;
         private readonly IKsqlClient client;
         private readonly IKsqlStreamParser streamParser;
 
-        public KsqlStreamProvider(IKsqlQueryReader queryReader, IKsqlClient client, IKsqlStreamParser streamParser)
+        public KsqlStreamContext(IKsqlQueryReader queryReader, IKsqlClient client, IKsqlStreamParser streamParser)
         {
             this.queryReader = queryReader;
             this.client = client;
             this.streamParser = streamParser;
         }
 
-        public async IAsyncEnumerable<T> ExecuteQueryAsync<T>(string queryName, [EnumeratorCancellation] CancellationToken token = default)
+        public async IAsyncEnumerable<T> ExecuteQueryAsync<T>(string queryName, IReadOnlyDictionary<string, string> options, [EnumeratorCancellation] CancellationToken token = default)
         {
-            var query = await queryReader.GetKsqlQueryAsync(queryName);
+            var query = await queryReader.GetKsqlQueryAsync(queryName, options);
             if (string.IsNullOrEmpty(query.Ksql))
                 yield return default!;
 

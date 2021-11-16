@@ -19,12 +19,10 @@ namespace KafkaTesting.ksqlDB
             this.ksqlNamespace = ksqlNamespace;
         }
 
-        public async Task<KsqlQuery> GetKsqlQueryAsync(string queryName)
+        public async Task<KsqlQuery> GetKsqlQueryAsync(string queryName, IReadOnlyDictionary<string, string> options)
         {
-            var raw = await GetRawQueryStringAsync(queryName);
-            if (string.IsNullOrEmpty(raw)) return new KsqlQuery();
-
-            (string query, Dictionary<string, string> options) = ParseQuery(raw);
+            var query = await GetRawQueryStringAsync(queryName);
+            if (string.IsNullOrEmpty(query)) return new KsqlQuery();
 
             return new KsqlQuery()
             {
@@ -42,15 +40,6 @@ namespace KafkaTesting.ksqlDB
 
             using var reader = new StreamReader(stream);
             return await reader.ReadToEndAsync();
-        }
-
-        private (string query, Dictionary<string, string> options) ParseQuery(string input)
-        {
-            var query = input.Substring(0, input.LastIndexOf(";") + 1);
-            var optionsRaw = input.Substring(input.LastIndexOf(";") + 1).Trim();
-            var optionsMaybe = JsonConvert.DeserializeObject<Dictionary<string, string>>(optionsRaw);
-            var options = optionsMaybe.DefaultOptionsIfEmpty();
-            return (query, options);
         }
     }
 }

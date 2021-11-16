@@ -4,6 +4,6 @@ namespace KafkaTesting.ksqlDB.Abstractions
 {
     public interface IKsqlQueryReader
     {
-        Task<KsqlQuery> GetKsqlQueryAsync(string queryName);
+        Task<KsqlQuery> GetKsqlQueryAsync(string queryName, IReadOnlyDictionary<string, string> options);
     }
 }
