@@ -11,6 +11,7 @@
     <None Remove="KsqlQueries\resources_pull.ksql" />
     <None Remove="KsqlQueries\resources_push.ksql" />
     <None Remove="KsqlQueries\testing.ksql" />
+    <None Remove="protos\scheduling\location.proto" />
     <None Remove="protos\scheduling\requirement.proto" />
     <None Remove="protos\scheduling\resource.proto" />
     <None Remove="protos\scheduling\test.proto" />
@@ -38,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="protos\scheduling\location.proto" />
     <Protobuf Include="protos\scheduling\core.proto" />
     <Protobuf Include="protos\scheduling\capability.proto" />
     <Protobuf Include="protos\scheduling\test2.proto" />

@@ -1,6 +1,7 @@
 using KafkaTesting.ksqlDB.Abstractions;
 using KafkaTesting.ksqlDB.Objects;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -25,6 +26,7 @@ namespace KafkaTesting.ksqlDB
             var body = JsonConvert.SerializeObject(query);
             var message = BuildOpenRequestMessage("/query-stream", body);
             var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token);
+            Console.WriteLine($"Cient: {response.StatusCode}");
             return await response.Content.ReadAsStreamAsync();
         }
 

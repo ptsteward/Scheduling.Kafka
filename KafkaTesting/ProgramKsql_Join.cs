@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace KafkaTesting
 {
-    public class ProgramKsql_Streaming
+    public class ProgramKsql_Join
     {
-        private const string ksqlQueryName = "resources_pull";
+        private const string ksqlQueryName = "resources_push";
 
         public static async Task _Main(string[] args)
         {
@@ -27,8 +27,11 @@ namespace KafkaTesting
 
                 var cts = new CancellationTokenSource();
                 cts.CancelAfter(TimeSpan.FromSeconds(10));
-                var producer = new TopicProducer<Resource>(new ResourceMessageProducer2(), "resource_topic");
-                await producer.ProduceAsync(cts.Token);
+                var resources = new TopicProducer<Resource>(new ResourceMessageProducer2(), "resource_topic");
+                var locations = new TopicProducer<Location>(new LocationMessageProducer(), "location_topic");
+                //await Task.WhenAll(resources.ProduceAsync(cts.Token), locations.ProduceAsync(cts.Token));
+                var _ = resources.ProduceAsync();
+                var __ = locations.ProduceAsync();
 
                 Console.WriteLine("Produce Done, Requesting State");
                 var options = new Dictionary<string, string>() 

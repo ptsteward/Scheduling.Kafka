@@ -22,11 +22,6 @@ message Position {
     double Latitude = 2;
 }
 
-message Location {
-    string ShortName = 1;
-    string LegacyId = 2;
-}
-
 message TimeBlock {
     google.protobuf.Timestamp StartUtc = 1;
     google.protobuf.Duration Duration = 2;

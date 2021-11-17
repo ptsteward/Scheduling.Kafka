@@ -1,1 +1,1 @@
-﻿SELECT * FROM resources_by_location2 WHERE LocationKey = 'PHX' AND InstanceKey = '1';
+﻿SELECT * FROM resources_by_location WHERE LOCATIONKEY = 'PHX' AND INSTANCEKEY = '1';

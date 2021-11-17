@@ -16,6 +16,9 @@ kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --crea
 kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --delete --if-exists --topic capability_topic
 kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --create --if-not-exists --topic capability_topic --replication-factor 3 --partitions 10
 
+kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --delete --if-exists --topic location_topic
+kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --create --if-not-exists --topic location_topic --replication-factor 3 --partitions 10
+
 kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --delete --if-exists --topic resource_topic
 kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --create --if-not-exists --topic resource_topic --replication-factor 3 --partitions 10
 

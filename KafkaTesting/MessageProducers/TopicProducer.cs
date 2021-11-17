@@ -26,6 +26,7 @@ namespace KafkaTesting.MessageProducers
             {
                 BootstrapServers = "localhost:9092,localhost:9093,localhost:9094",
                 Acks = Acks.Leader,
+                //TransactionalId = "1"
             };
             var schemaConfig = new SchemaRegistryConfig()
             {
@@ -40,15 +41,26 @@ namespace KafkaTesting.MessageProducers
                 .SetErrorHandler((p, e) => Console.WriteLine(e));
 
                 using var producer = builder.Build();
+                //producer.InitTransactions(TimeSpan.FromSeconds(3));
                 Console.WriteLine($"Producing messages to Topic:{topic}");
                 while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(500);
-                    Console.WriteLine($"Producing new message");
-
+                    Console.WriteLine($"Producing new message");                                       
                     var msg = messageProducer.ProduceMessage();
 
-                    await producer.ProduceAsync(topic, msg);
+                    try
+                    {
+                        //producer.BeginTransaction();
+                        await producer.ProduceAsync(topic, msg);
+                        //producer.CommitTransaction();
+                    }
+                    catch (KafkaException ex)
+                    {
+                        //producer.AbortTransaction();
+                        throw;
+                    }
+
                     Console.WriteLine("Produced new message");
                 }
             });

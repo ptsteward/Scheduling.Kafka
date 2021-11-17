@@ -26,7 +26,6 @@ namespace KafkaTesting.ksqlDB
             while (!reader.EndOfStream)
             {
                 var rawJson = await reader.ReadLineAsync();
-                Console.WriteLine($"StreamParser Incoming: {rawJson}");
                 var json = rowParser.ParseStreamRowToJson(rawJson ?? string.Empty, header.ColumnNames);
                 var objT = JsonConvert.DeserializeObject<T>(json);
                 yield return objT;

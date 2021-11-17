@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS resources2_by_location DELETE TOPIC;
+DROP STREAM IF EXISTS resource2_stream;
+
+CREATE OR REPLACE STREAM resource2_stream
+(LocationKey VARCHAR KEY, InstanceKey VARCHAR KEY)
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED', KAFKA_TOPIC='resource_topic');
+
+CREATE OR REPLACE TABLE resources2_by_location
+WITH (KEY_FORMAT='DELIMITED')
+AS SELECT
+    LocationKey,
+    InstanceKey,
+    LATEST_BY_OFFSET(CAST(Instance AS VARCHAR)) AS Instance,
+    LATEST_BY_OFFSET(Location) AS Location,
+    LATEST_BY_OFFSET(CAST(Capabilities AS VARCHAR)) AS Capabilities
+FROM resource2_stream
+GROUP BY LocationKey, InstanceKey
+EMIT CHANGES;

@@ -1,10 +1,10 @@
-DROP TABLE IF EXISTS resources_by_location2;
-DROP TABLE IF EXISTS resources_by_location;
+DROP TABLE IF EXISTS resources_by_location2 DELETE TOPIC;
+DROP TABLE IF EXISTS resources_by_location DELETE TOPIC;
 DROP STREAM IF EXISTS resource_stream2;
 DROP STREAM IF EXISTS resource_stream;
 
 CREATE OR REPLACE STREAM resource_stream
-(MessageKey VARCHAR KEY)
+(MessageKey VARCHAR KEY, Instance Instance, Location VARCHAR, Capabilities ARRAY<Capability>)
 WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='KAFKA', KAFKA_TOPIC='resource_topic');
 
 CREATE OR REPLACE STREAM resource_stream2
@@ -18,7 +18,7 @@ FROM resource_stream
 PARTITION BY Location, Instance->InstanceGuid;
 
 CREATE OR REPLACE TABLE resources_by_location
-WITH (KEY_FORMAT='DELIMITED')
+WITH (KEY_FORMAT='DELIMITED', PARTITIONS=5)
 AS SELECT
     Location AS LocationKey,
     Instance->InstanceGuid AS InstanceKey,
