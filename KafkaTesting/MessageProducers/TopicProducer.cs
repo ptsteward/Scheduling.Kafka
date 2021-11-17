@@ -3,6 +3,9 @@ using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Google.Protobuf;
 using KafkaTesting.MessageProducers.Messages;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KafkaTesting.MessageProducers
 {

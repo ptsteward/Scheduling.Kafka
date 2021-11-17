@@ -1,3 +1,9 @@
+DROP TYPE IF EXISTS Resource;
+DROP TYPE IF EXISTS Capability;
+DROP TYPE IF EXISTS Requirement;
+DROP TYPE IF EXISTS Instance;
+DROP TYPE IF EXISTS Identity;
+
 CREATE TYPE Identity AS STRUCT<IdentityGuid VARCHAR, IdentityKind VARCHAR>;
 CREATE TYPE Instance AS STRUCT<Identity Identity, InstanceGuid VARCHAR>;
 CREATE TYPE Requirement AS STRUCT<Identity Identity>;

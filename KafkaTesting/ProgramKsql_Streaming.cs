@@ -5,13 +5,17 @@ using KafkaTesting.MessageProducers;
 using KafkaTesting.MessageProducers.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KafkaTesting
 {
     public class ProgramKsql_Streaming
     {
-        private const string ksqlQueryName = "resources_push";
+        private const string ksqlQueryName = "resources_pull";
 
         public static async Task Main(string[] args)
         {
@@ -22,20 +26,20 @@ namespace KafkaTesting
                 var provider = services.BuildServiceProvider().GetRequiredService<IKsqlStreamContext>();
 
                 var cts = new CancellationTokenSource();
-                //cts.CancelAfter(TimeSpan.FromSeconds(10));
+                cts.CancelAfter(TimeSpan.FromSeconds(10));
                 var producer = new TopicProducer<Resource>(new ResourceMessageProducer(), "resource_topic");
-                var _ = producer.ProduceAsync(cts.Token);
+                await producer.ProduceAsync(cts.Token);
 
-                //Console.WriteLine("Produce Done, Requesting State");
+                Console.WriteLine("Produce Done, Requesting State");
                 var options = new Dictionary<string, string>() 
                 {
                     ["ksql.streams.auto.offset.reset"] = "earliest"
                 };
-                var stream = provider.ExecuteQueryAsync<Resource>(ksqlQueryName, options);
+                var stream = provider.ExecuteQueryAsync<ResourcesTable>(ksqlQueryName, options);
                 await foreach (var resource in stream)
                 {
                     PrintItem(resource);
-                }            
+                }
             }
             catch (Exception ex)
             {
@@ -43,13 +47,17 @@ namespace KafkaTesting
             }
         }
 
-        private static void PrintItem(Resource item)
+        private static void PrintItem(ResourcesTable item)
         {
             Console.WriteLine($@"
 STREAM:
+InstanceKey:{item?.InstanceKey}
+LocationKey:{item?.LocationKey}");
+            /*Console.WriteLine($@"
+STREAM:
 Instance: {JsonConvert.SerializeObject(item?.Instance)}
 Location:{item?.Location}
-Capabilities: {JsonConvert.SerializeObject(item?.Capabilities)}");
+Capabilities: {JsonConvert.SerializeObject(item?.Capabilities)}");*/
         }
     }
 }

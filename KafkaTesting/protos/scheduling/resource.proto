@@ -12,3 +12,11 @@ message Resource {
     string Location = 2;
     repeated Capability Capabilities = 3;
 }
+
+message ResourcesTable {
+    string LocationKey = 1;
+    string InstanceKey = 2;
+    Instance Instance = 3;
+    string Location = 4;
+    repeated Capability Capabilities = 5;
+}

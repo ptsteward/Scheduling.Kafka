@@ -1,6 +1,8 @@
 ﻿using KafkaTesting.ksqlDB.Abstractions;
 using KafkaTesting.ksqlDB.Extensions;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace KafkaTesting.ksqlDB
@@ -81,9 +83,10 @@ namespace KafkaTesting.ksqlDB
 
             while (leftOver.Length > 1 && !leftOver.StartsWith("]"))
             {
-                (leftOver, int remove) = Parse_RawStringValue(leftOver, builder);
-                removed += remove;                
-                
+                (string leftOver2, int remove) = Parse_RawStringValue(leftOver, builder);
+                removed += remove;
+                leftOver = leftOver2;
+
                 if (leftOver.StartsWith(", "))
                 {
                     builder.Append(",");
@@ -110,8 +113,9 @@ namespace KafkaTesting.ksqlDB
 
             while (leftOver.Length > 1 && !leftOver.StartsWith("}"))
             {
-                (leftOver, int remove) = Parse_Header(leftOver, start, builder);
+                (string leftOver2, int remove) = Parse_Header(leftOver, start, builder);
                 removed += remove;
+                leftOver = leftOver2;
 
                 (leftOver, remove) = Parse_RawStringValue(leftOver, builder);
                 removed += remove;

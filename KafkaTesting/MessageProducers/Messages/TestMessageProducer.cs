@@ -1,5 +1,6 @@
 ﻿using Carvana.Sched.Scheduling.Contracts.Kafka;
 using Confluent.Kafka;
+using System;
 
 namespace KafkaTesting.MessageProducers.Messages
 {

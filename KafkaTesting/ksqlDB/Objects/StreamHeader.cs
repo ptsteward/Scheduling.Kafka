@@ -1,3 +1,5 @@
+using System;
+
 namespace KafkaTesting.ksqlDB.Objects
 {
     public class StreamHeader

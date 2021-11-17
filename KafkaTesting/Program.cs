@@ -4,6 +4,8 @@ using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace KafkaTesting
 {

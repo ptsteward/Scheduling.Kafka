@@ -2,7 +2,11 @@
 using KafkaTesting.ksqlDB.Extensions;
 using KafkaTesting.ksqlDB.Objects;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace KafkaTesting.ksqlDB
 {

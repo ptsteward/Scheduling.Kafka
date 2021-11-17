@@ -5,8 +5,11 @@ using KafkaTesting.MessageProducers;
 using KafkaTesting.MessageProducers.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace KafkaTesting
 {

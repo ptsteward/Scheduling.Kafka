@@ -1,4 +1,6 @@
 ﻿using KafkaTesting.ksqlDB.Objects;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KafkaTesting.ksqlDB.Abstractions
 {

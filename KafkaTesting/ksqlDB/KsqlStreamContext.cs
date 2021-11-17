@@ -1,6 +1,10 @@
 using KafkaTesting.ksqlDB.Abstractions;
 using KafkaTesting.ksqlDB.Objects;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KafkaTesting.ksqlDB
 {

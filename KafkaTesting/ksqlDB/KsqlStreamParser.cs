@@ -1,6 +1,10 @@
 ﻿using KafkaTesting.ksqlDB.Abstractions;
 using KafkaTesting.ksqlDB.Objects;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace KafkaTesting.ksqlDB
 {
