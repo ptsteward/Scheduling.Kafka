@@ -136,7 +136,7 @@ namespace KafkaTesting.ksqlDB
 
         private (string json, int removed) Parse_BareValue(string input)
         {
-            var valueLength = new[] { input.IndexOf(","), input.IndexOf(@""""), input.IndexOf("}"), input.Length }.Where(idx => idx > 0).Min();
+            var valueLength = new[] { input.IndexOf(","), input.IndexOf(@""""), input.IndexOf("}"), input.IndexOf("]"), input.Length }.Where(idx => idx > 0).Min();
             var value = input.Substring(0, valueLength);
             return (value, value.Length);
         }
