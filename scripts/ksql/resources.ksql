@@ -1,10 +1,15 @@
+DROP TABLE IF EXISTS resources_by_locationX DELETE TOPIC;
 DROP TABLE IF EXISTS resources_by_location2 DELETE TOPIC;
 DROP TABLE IF EXISTS resources_by_location DELETE TOPIC;
-DROP STREAM IF EXISTS resource_stream2;
+DROP STREAM IF EXISTS resource_stream2 DELETE TOPIC;
 DROP STREAM IF EXISTS resource_stream;
 
 CREATE OR REPLACE STREAM resource_stream
 (MessageKey VARCHAR KEY, Instance Instance, Location VARCHAR, Capabilities ARRAY<Capability>)
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='KAFKA', KAFKA_TOPIC='resource_topic');
+
+CREATE OR REPLACE TABLE resource_topic_table
+(MessageKey VARCHAR PRIMARY KEY, Instance Instance, Location VARCHAR, Capabilities ARRAY<Capability>)
 WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='KAFKA', KAFKA_TOPIC='resource_topic');
 
 CREATE OR REPLACE STREAM resource_stream2
@@ -17,8 +22,8 @@ AS SELECT
 FROM resource_stream
 PARTITION BY Location, Instance->InstanceGuid;
 
-CREATE OR REPLACE TABLE resources_by_location
-WITH (KEY_FORMAT='DELIMITED', PARTITIONS=5)
+CREATE OR REPLACE TABLE resources_by_locationX
+WITH (KEY_FORMAT='DELIMITED', PARTITIONS=5, KAFKA_TOPIC='resources_by_location_topicX')
 AS SELECT
     Location AS LocationKey,
     Instance->InstanceGuid AS InstanceKey,
@@ -28,6 +33,17 @@ AS SELECT
 FROM resource_stream
 GROUP BY Location, Instance->InstanceGuid
 EMIT CHANGES;
+
+CREATE OR REPLACE TABLE resources_by_location
+WITH (KEY_FORMAT='DELIMITED', PARTITIONS=5, KAFKA_TOPIC='resources_by_location_topic')
+AS SELECT
+    Location AS LocationKey,
+    Instance->InstanceGuid AS InstanceKey,
+    Instance,
+    Location,
+    Capabilities
+FROM resource_topic_table
+GROUP BY Location, Instance->InstanceGuid;
 
 CREATE OR REPLACE TABLE resources_by_location2
 WITH (KEY_FORMAT='DELIMITED')

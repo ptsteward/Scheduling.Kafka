@@ -17,7 +17,7 @@ namespace KafkaTesting
     {
         private const string ksqlQueryName = "resources_pull";
 
-        public static async Task _Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {

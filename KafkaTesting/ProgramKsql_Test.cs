@@ -15,7 +15,7 @@ namespace KafkaTesting
 {
     public class ProgramKsql_Test
     {
-        public static async Task Main(string[] args)
+        public static async Task _Main(string[] args)
         {
             try
             {

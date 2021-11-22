@@ -1,18 +1,51 @@
+DROP TABLE IF EXISTS resources3_table DELETE TOPIC;
+DROP TABLE IF EXISTS resources3_root_table DELETE TOPIC;
+DROP STREAM IF EXISTS resources3_stream_grouped DELETE TOPIC;
+DROP STREAM IF EXISTS resources3_stream DELETE TOPIC;
 DROP TABLE IF EXISTS resources2_by_location DELETE TOPIC;
-DROP STREAM IF EXISTS resource2_stream;
+DROP TABLE IF EXISTS resource2_stream_table;
 
-CREATE OR REPLACE STREAM resource2_stream
-(LocationKey VARCHAR KEY, InstanceKey VARCHAR KEY)
+CREATE OR REPLACE TABLE resource2_stream_table
+(LocationKey VARCHAR PRIMARY KEY, InstanceKey VARCHAR PRIMARY KEY)
 WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED', KAFKA_TOPIC='resource_topic');
 
 CREATE OR REPLACE TABLE resources2_by_location
-WITH (KEY_FORMAT='DELIMITED')
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED')
 AS SELECT
     LocationKey,
     InstanceKey,
-    LATEST_BY_OFFSET(CAST(Instance AS VARCHAR)) AS Instance,
-    LATEST_BY_OFFSET(Location) AS Location,
-    LATEST_BY_OFFSET(CAST(Capabilities AS VARCHAR)) AS Capabilities
-FROM resource2_stream
-GROUP BY LocationKey, InstanceKey
+    Instance,
+    Location,
+    Capabilities
+FROM resource2_stream_table
+EMIT CHANGES;
+
+CREATE OR REPLACE STREAM resources3_stream
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='KAFKA', KAFKA_TOPIC='resource_topic');
+
+CREATE OR REPLACE STREAM resources3_stream_grouped
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED')
+AS SELECT
+    Location AS LocationKey,
+    Instance->InstanceGuid AS InstanceKey,
+    Instance,
+    AS_VALUE(Location) AS Location,
+    Capabilities
+FROM resources3_stream
+PARTITION BY Location, Instance->InstanceGuid
+EMIT CHANGES;
+
+CREATE OR REPLACE TABLE resources3_root_table
+(LocationKey VARCHAR PRIMARY KEY, InstanceKey VARCHAR PRIMARY KEY)
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED', KAFKA_TOPIC='RESOURCES3_STREAM_GROUPED');
+
+CREATE OR REPLACE TABLE resources3_table
+WITH (VALUE_FORMAT='PROTOBUF', KEY_FORMAT='DELIMITED')
+AS SELECT
+    LocationKey,
+    InstanceKey,
+    Instance,
+    Location,
+    Capabilities
+FROM resources3_root_table
 EMIT CHANGES;

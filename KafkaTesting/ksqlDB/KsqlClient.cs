@@ -27,6 +27,8 @@ namespace KafkaTesting.ksqlDB
             var message = BuildOpenRequestMessage("/query-stream", body);
             var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token);
             Console.WriteLine($"Cient: {response.StatusCode}");
+            if (!response.IsSuccessStatusCode)
+                Console.WriteLine($"Client: {await response.Content.ReadAsStringAsync()}");
             return await response.Content.ReadAsStreamAsync();
         }
 

@@ -16,13 +16,11 @@ done
 
 echo -e "\nRunning KSQL"
 cat /data/scripts/types.ksql \
-/data/scripts/resources.ksql \
 /data/scripts/resources2.ksql \
-/data/scripts/resource_location.ksql \
-/data/scripts/test.ksql \
 /data/scripts/list_things.ksql \
 | ksql http://ksqldb-server:8088
 
 #/data/scripts/resources.ksql \
 #/data/scripts/resources2.ksql \
 #/data/scripts/test.ksql \
+#/data/scripts/resource_location.ksql \

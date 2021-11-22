@@ -134,6 +134,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
       KSQL_AUTO_OFFSET_RESET: 'earliest'
+      KSQL_KSQL_QUERY_PULL_TABLE_SCAN_ENABLED: 'true'
 
   rest-proxy:
     image: confluentinc/cp-kafka-rest:latest
