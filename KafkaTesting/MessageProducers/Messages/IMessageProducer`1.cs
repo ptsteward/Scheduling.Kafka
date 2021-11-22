@@ -3,8 +3,9 @@ using Google.Protobuf;
 
 namespace KafkaTesting.MessageProducers.Messages
 {
-    public interface IMessageProducer<T> where T : class, IMessage<T>, new()
+    public interface IMessageProducer<TMessage>
+        where TMessage : class, IMessage<TMessage>, new()
     {
-        Message<string, T> ProduceMessage();
+        Message<string, TMessage> ProduceMessage();
     }
 }

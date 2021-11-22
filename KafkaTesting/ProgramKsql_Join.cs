@@ -34,7 +34,7 @@ namespace KafkaTesting
                 var __ = locations.ProduceAsync();
 
                 Console.WriteLine("Produce Done, Requesting State");
-                var options = new Dictionary<string, string>() 
+                var options = new Dictionary<string, string>()
                 {
                     ["ksql.streams.auto.offset.reset"] = "earliest"
                 };

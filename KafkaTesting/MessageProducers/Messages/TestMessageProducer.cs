@@ -38,10 +38,10 @@ namespace KafkaTesting.MessageProducers.Messages
                     {
                         IdentityGuid = key,
                         IdentityKind = locations[which],
-                    },                    
+                    },
                 }
             };
-            
+
             msg.Value.Capabilities.AddRange(which == 0 && rand.Next(0, 2) == 0 ? instances1 : instances2);
             var testX = new TestX()
             {

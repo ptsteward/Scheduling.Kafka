@@ -38,7 +38,7 @@ Complex: {JsonConvert.SerializeObject(test?.Complex)}
 Identity:{JsonConvert.SerializeObject(test?.Identity)}
 Capabilities: {test?.Capabilities}
 Amap: {JsonConvert.SerializeObject(test?.Amap)}");
-                }            
+                }
             }
             catch (Exception ex)
             {

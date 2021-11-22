@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace KafkaTesting.MessageProducers
 {
-    public class TopicProducer<T> where T : class, IMessage<T>, new()
+    public class TopicProducer<TMessage>
+        where TMessage : class, IMessage<TMessage>, new()
     {
-        private readonly IMessageProducer<T> messageProducer;
+        private readonly IMessageProducer<TMessage> messageProducer;
         private readonly string topic = string.Empty;
 
-        public TopicProducer(IMessageProducer<T> messageProducer, string topic)
+        public TopicProducer(IMessageProducer<TMessage> messageProducer, string topic)
         {
             this.messageProducer = messageProducer;
             this.topic = topic;
@@ -25,7 +26,7 @@ namespace KafkaTesting.MessageProducers
             var producerConfig = new ProducerConfig()
             {
                 BootstrapServers = "localhost:9092,localhost:9093,localhost:9094",
-                Acks = Acks.Leader,
+                Acks = Acks.Leader,                
                 //TransactionalId = "1"
             };
             var schemaConfig = new SchemaRegistryConfig()
@@ -36,8 +37,8 @@ namespace KafkaTesting.MessageProducers
             using var schemaClient = new CachedSchemaRegistryClient(schemaConfig);
             var produceTask = Task.Run(async () =>
             {
-                var builder = new ProducerBuilder<string, T>(producerConfig)
-                .SetValueSerializer(new ProtobufSerializer<T>(schemaClient))
+                var builder = new ProducerBuilder<string, TMessage>(producerConfig)
+                .SetValueSerializer(new ProtobufSerializer<TMessage>(schemaClient))
                 .SetErrorHandler((p, e) => Console.WriteLine(e));
 
                 using var producer = builder.Build();
@@ -48,7 +49,7 @@ namespace KafkaTesting.MessageProducers
                     await Task.Delay(500);
                     Console.WriteLine($"Producing new message");                                       
                     var msg = messageProducer.ProduceMessage();
-
+                    
                     try
                     {
                         //producer.BeginTransaction();
